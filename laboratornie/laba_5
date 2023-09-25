@@ -1,0 +1,73 @@
+#include <iostream>
+#include <algorithm> // Для использования функций min() и max()
+
+class Rectangle {
+private:
+    double width;   // Ширина прямоугольника
+    double height;  // Высота прямоугольника
+    double x;       // Координата X верхнего левого угла прямоугольника
+    double y;       // Координата Y верхнего левого угла прямоугольника
+
+public:
+    // Конструктор класса
+    Rectangle(double w, double h, double posX, double posY)
+        : width(w), height(h), x(posX), y(posY) {
+        std::cout << "Constructor called. Width: " << width << ", Height: "
+                  << height << ", Position X: " << x << ", Position Y: " << y
+                  << std::endl;
+    }
+
+    // Деструктор класса
+    ~Rectangle() {
+        std::cout << "Destructor called. Width: " << width << ", Height: "
+                  << height << ", Position X: " << x << ", Position Y: " << y
+                  << std::endl;
+    }
+
+    // Метод для перемещения прямоугольника на плоскости
+    void Move(double dx, double dy) {
+        x += dx;
+        y += dy;
+    }
+
+    // Метод для изменения размеров прямоугольника
+    void Resize(double newWidth, double newHeight) {
+        width = newWidth;
+        height = newHeight;
+    }
+
+    // Метод для получения площади прямоугольника
+    double GetArea() const {
+        return width * height;
+    }
+
+    // Метод для получения ширины прямоугольника
+    double GetWidth() const {
+        return width;
+    }
+
+    // Метод для получения высоты прямоугольника
+    double GetHeight() const {
+        return height;
+    }
+
+    // Метод для вывода информации о прямоугольнике на экран
+    void PrintInfo() const {
+        std::cout << "Width: " << width << ", Height: " << height
+                  << ", Position X: " << x << ", Position Y: " << y << std::endl;
+    }
+
+private:
+    // Приватный статический метод для вычисления наименьшего прямоугольника, содержащего два заданных прямоугольника
+    static Rectangle EnclosingRectangle(const Rectangle& rect1, const Rectangle& rect2) {
+        double minX = std::min(rect1.x, rect2.x); // Находим минимальную координату X из двух прямоугольников
+        double minY = std::min(rect1.y, rect2.y); // Находим минимальную координату Y из двух прямоугольников
+        double maxX = std::max(rect1.x + rect1.width, rect2.x + rect2.width); // Находим максимальную координату X из двух прямоугольников
+        double maxY = std::max(rect1.y + rect1.height, rect2.y + rect2.height); // Находим максимальную координату Y из двух прямоугольников
+
+        double encWidth = maxX - minX;   // Вычисляем ширину наименьшего прямоугольника
+        double encHeight = maxY - minY;  // Вычисляем высоту наименьшего прямоугольника
+
+        return Rectangle(encWidth, encHeight, minX, minY); // Возвращаем новый объект класса Rectangle со значениями, вычисленными выше
+    }
+};
