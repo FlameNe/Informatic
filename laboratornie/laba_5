@@ -71,3 +71,23 @@ private:
         return Rectangle(encWidth, encHeight, minX, minY); // Возвращаем новый объект класса Rectangle со значениями, вычисленными выше
     }
 };
+int main() {
+    Rectangle rect1(5.0, 3.0, 0.0, 0.0);    // Создаем прямоугольник rect1
+    Rectangle rect2(7.0, 4.0, 2.0, 2.0);    // Создаем прямоугольник rect2
+
+    rect1.PrintInfo();                      // Выводим информацию о прямоугольнике rect1
+
+    rect1.Move(1.0, 1.0);                   // Перемещаем прямоугольник rect1 на (1, 1)
+    rect1.Resize(4.0, 2.0);                 // Изменяем размеры прямоугольника rect1 на (4, 2)
+
+    double area = rect1.GetArea();          // Получаем площадь прямоугольника rect1
+    double width = rect1.GetWidth();        // Получаем ширину прямоугольника rect1
+    double height = rect1.GetHeight();      // Получаем высоту прямоугольника rect1
+
+    rect1.PrintInfo();                      // Выводим обновленную информацию о прямоугольнике rect1
+
+    Rectangle enclosingRect = Rectangle::EnclosingRectangle(rect1, rect2);  // Создаем наименьший прямоугольник, содержащий оба прямоугольника rect1 и rect2
+    enclosingRect.PrintInfo();               // Выводим информацию о полученном прямоугольнике
+
+    return 0;
+}
