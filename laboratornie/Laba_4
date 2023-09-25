@@ -1,0 +1,25 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <regex>
+
+int main() {
+    std::ifstream file("C:/Users/White/Desktop/labs/lab_4/text_2.txt");
+    if (!file) {
+        std::cerr << "Failed to open file." << std::endl;
+        return 1;
+    }
+
+    std::regex pattern("\\b\\d{2}\\b"); // Регулярное выражение для поиска двузначных чисел
+    std::string line;
+
+    while (std::getline(file, line)) {
+        if (std::regex_search(line, pattern)) {
+            std::cout << line << std::endl;
+        }
+    }
+
+    file.close(); // Закрываем файл
+
+    return 0;
+}
