@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int compare_letters(const char* word1, const char* word2) {
+    int letters[26] = {0}; // массив для хранения количества каждой буквы
+    int length1 = strlen(word1);
+    int length2 = strlen(word2);
+
+    // подсчет количества букв в первом слове
+    for (int i = 0; i < length1; i++) {
+        char c = tolower(word1[i]);
+        if (isalpha(c)) {
+            letters[c - 'a']++;
+        }
+    }
+
+    // сравнение количества букв первого слова со вторыми словами
+    for (int i = 0; i < length2; i++) {
+        char c = tolower(word2[i]);
+        if (isalpha(c)) {
+            if (letters[c - 'a'] == 0) {
+                return 0; // если буква во втором слове отсутствует в первом слове, возвращаем 0
+            }
+            letters[c - 'a']--;
+        }
+    }
+
+    // проверка, что все буквы первого слова использованы во втором слове
+    for (int i = 0; i < 26; i++) {
+        if (letters[i] != 0) {
+            return 0; // если количество букв не совпадает, возвращаем 0
+        }
+    }
+
+    return 1; // возвращаем 1, если все проверки успешны
+}
+
+void find_matching_words(const char* sentence) {
+    char first_word[100]; // ограничим максимальную длину первого слова в 100 символов
+    char word[100]; // ограничим максимальную длину слова в предложении в 100 символов
+
+    int i = 0;
+    int j = 0;
+
+    // считываем первое слово из предложения
+    while (sentence[i] != ' ' && sentence[i] != '\0') {
+        first_word[j] = sentence[i];
+        i++;
+        j++;
+    }
+    first_word[j] = '\0';
+
+    i++;
+    j = 0;
+
+    // перебираем слова в предложении и сравниваем их с первым словом
+    printf("Слова, которые состоят из тех же букв, что и первое слово:\n");
+    while (sentence[i] != '\0') {
+        if (sentence[i] == ' ' || sentence[i] == ',') {
+            word[j] = '\0';
+            if (compare_letters(first_word, word)) {
+                printf("%s\n", word);
+            }
+            j = 0;
+        } else {
+            word[j] = sentence[i];
+            j++;
+        }
+        i++;
+    }
+    word[j] = '\0';
+
+    if (compare_letters(first_word, word)) {
+        printf("%s\n", word);
+    }
+}
+
+int main() {
+    char sentence[100]; // Увеличьте размер массива, если ваше предложение будет длиннее
+
+    printf("Введите предложение: ");
+    fgets(sentence, sizeof(sentence), stdin);
+
+    // Удаление символа новой строки, который добавляется после ввода с помощью fgets
+    size_t length = strlen(sentence);
+    if (length > 0 && sentence[length - 1] == '\n') {
+        sentence[length - 1] = '\0';
+    }
+
+    find_matching_words(sentence);
+
+    return 0;
+}
