@@ -1,0 +1,70 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+void printArray(int** arr, int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            std::cout << arr[i][j] << "\t";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void deleteEvenColumns(int** arr, int rows, int& cols) {
+    int evenCols = 0;
+    
+    for (int j = 1; j < cols; j += 2) {
+        for (int i = 0; i < rows; i++) {
+            arr[i][j] = arr[i][j + 1];
+        }
+        evenCols++;
+    }
+    
+    cols -= evenCols;
+    
+    for (int i = 0; i < rows; i++) {
+        arr[i] = (int*)realloc(arr[i], cols * sizeof(int));
+    }
+}
+
+int main() {
+    srand(time(NULL));
+    
+    int rows, cols;
+    
+    std::cout << "Enter the number of rows: ";
+    std::cin >> rows;
+    
+    std::cout << "Enter the number of columns: ";
+    std::cin >> cols;
+    
+    int** arr = new int*[rows];
+    for (int i = 0; i < rows; i++) {
+        arr[i] = new int[cols];
+    }
+    
+    // Заполнение массива случайными числами
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            arr[i][j] = rand() % 100;
+        }
+    }
+    
+    std::cout << "Original Array:" << std::endl;
+    printArray(arr, rows, cols);
+    
+    // Удаление четных столбцов
+    deleteEvenColumns(arr, rows, cols);
+    
+    std::cout << "Modified Array:" << std::endl;
+    printArray(arr, rows, cols);
+    
+    // Освобождение памяти
+    for (int i = 0; i < rows; i++) {
+        delete[] arr[i];
+    }
+    delete[] arr;
+    
+    return 0;
+}
