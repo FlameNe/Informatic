@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *file;
+    char line[100];
+
+    file = fopen("file.txt", "r"); // Замените "file.txt" на путь к вашему файлу
+
+    if (file == NULL) {
+        printf("Не удалось открыть файл\n");
+        return 1;
+    }
+
+    while (fgets(line, sizeof(line), file)) {
+        int has_two_digit = 0; // Флаг, указывающий на то, есть ли в строке двузначные числа
+
+        for (int i = 0; line[i] != '\0'; i++) {
+            if (isdigit(line[i]) && isdigit(line[i+1])) {
+                has_two_digit = 1;
+                break;
+            }
+        }
+
+        if (has_two_digit) {
+            printf("%s", line);
+        }
+    }
+
+    fclose(file);
+
+    return 0;
+}
