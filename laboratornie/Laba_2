@@ -1,0 +1,240 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <locale.h>
+
+// Максимальная длина строк
+#define MAX_NAME_LENGTH 50
+#define MAX_PHONE_LENGTH 15
+#define MAX_CAR_MODEL_LENGTH 50
+#define MAX_CAR_NUMBER_LENGTH 20
+#define MAX_PASSPORT_NUMBER_LENGTH 20
+
+// Структура владельца автомобиля
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    char phone[MAX_PHONE_LENGTH];
+    char car_model[MAX_CAR_MODEL_LENGTH];
+    char car_number[MAX_CAR_NUMBER_LENGTH];
+    char passport_number[MAX_PASSPORT_NUMBER_LENGTH];
+} Owner;
+
+// Функция формирования динамического одномерного массива структур
+Owner* create_dynamic_array(int size) {
+    Owner* array = (Owner*)malloc(size * sizeof(Owner));
+    return array;
+}
+
+// Функция просмотра содержимого динамического массива структур
+void display_array(Owner* array, int size) {
+    for (int i = 0; i < size; i++) {
+        printf("Owner %d:\n", i + 1);
+        printf("Name: %s\n", array[i].name);
+        printf("Phone: %s\n", array[i].phone);
+        printf("Car Model: %s\n", array[i].car_model);
+        printf("Car Number: %s\n", array[i].car_number);
+        printf("Passport Number: %s\n\n", array[i].passport_number);
+    }
+}
+
+// Функция дополнения уже существующего массива структур с новыми структурами
+Owner* add_to_array(Owner* array, int* size, Owner owner) {
+    array = (Owner*)realloc(array, (*size + 1) * sizeof(Owner));
+    array[*size] = owner;
+    (*size)++;
+    return array;
+}
+
+// Функция поиска и вывода на экран структуры(структур) с заданным значением элемента
+void search_and_print(Owner* array, int size, char* search_value) {
+    int found = 0;
+    for (int i = 0; i < size; i++) {
+        if (strcmp(array[i].name, search_value) == 0 || strcmp(array[i].phone, search_value) == 0 ||
+            strcmp(array[i].car_model, search_value) == 0 || strcmp(array[i].car_number, search_value) == 0 ||
+            strcmp(array[i].passport_number, search_value) == 0) {
+                printf("Owner %d:\n", i + 1);
+                printf("Name: %s\n", array[i].name);
+                printf("Phone: %s\n", array[i].phone);
+                printf("Car Model: %s\n", array[i].car_model);
+                printf("Car Number: %s\n", array[i].car_number);
+                printf("Passport Number: %s\n\n", array[i].passport_number);
+                found = 1;
+        }
+    }
+    if (!found) {
+        printf("No owner with the provided value found.\n");
+    }
+}
+
+// Функция сортировки массива структур по заданному полю (элементу)
+void sort_array(Owner* array, int size, int field) {
+    Owner temp;
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = i + 1; j < size; j++) {
+            switch (field) {
+                case 1:
+                    if (strcmp(array[i].name, array[j].name) > 0) {
+                        temp = array[i];
+                        array[i] = array[j];
+                        array[j] = temp;
+                    }
+                    break;
+                case 2:
+                    if (strcmp(array[i].phone, array[j].phone) > 0) {
+                        temp = array[i];
+                        array[i] = array[j];
+                        array[j] = temp;
+                    }
+                    break;
+                case 3:
+                    if (strcmp(array[i].car_model, array[j].car_model) > 0) {
+                        temp = array[i];
+                        array[i] = array[j];
+                        array[j] = temp;
+                    }
+                    break;
+                case 4:
+                    if (strcmp(array[i].car_number, array[j].car_number) > 0) {
+                        temp = array[i];
+                        array[i] = array[j];
+                        array[j] = temp;
+                    }
+                    break;
+                case 5:
+                    if (strcmp(array[i].passport_number, array[j].passport_number) > 0) {
+                        temp = array[i];
+                        array[i] = array[j];
+                        array[j] = temp;
+                    }
+                    break;
+                default:
+                    printf("Invalid field provided.\n");
+            }
+        }
+    }
+}
+
+// Функция создания бинарного файла
+void create_binary_file(Owner* array, int size) {
+    FILE* file = fopen("car_owners.bin", "wb");
+    if (file == NULL) {
+        printf("Error creating binary file.\n");
+        return;
+    }
+    fwrite(array, sizeof(Owner), size, file);
+    fclose(file);
+    printf("Binary file created successfully.\n");
+}
+
+// Функция вывода содержимого бинарного файла
+void display_binary_file() {
+    FILE* file = fopen("car_owners.bin", "rb");
+    if (file == NULL) {
+        printf("Error opening binary file.\n");
+        return;
+    }
+    Owner owner;
+    fread(&owner, sizeof(Owner), 1, file);
+    while (!feof(file)) {
+        printf("Name: %s\n", owner.name);
+        printf("Phone: %s\n", owner.phone);
+        printf("Car Model: %s\n", owner.car_model);
+        printf("Car Number: %s\n", owner.car_number);
+        printf("Passport Number: %s\n\n", owner.passport_number);
+        fread(&owner, sizeof(Owner), 1, file);
+    }
+    fclose(file);
+}
+
+// Функция удаления элемента из бинарного файла и изменения размера файла
+void delete_from_binary_file(int index) {
+    FILE* file = fopen("car_owners.bin", "rb+");
+    if (file == NULL) {
+        printf("Error opening binary file.\n");
+        return;
+    }
+
+    // Перемещаем указатель чтения/записи на элемент, который нужно удалить
+    fseek(file, index * sizeof(Owner), SEEK_SET);
+
+    Owner empty_owner;  // Пустая структура, которую записываем на место удаленного элемента
+    fwrite(&empty_owner, sizeof(Owner), 1, file);
+
+    // Перемещаем указатель чтения/записи в конец файла
+    fseek(file, 0, SEEK_END);
+
+    // Получаем текущий размер файла
+    long size = ftell(file);
+    if (size % sizeof(Owner) == 0) {
+        size /= sizeof(Owner);
+    } else {
+        printf("Error: File size is not a multiple of the owner struct size.\n");
+        fclose(file);
+        return;
+    }
+
+    // Устанавливаем новый размер файла
+    ftruncate(fileno(file), (size - 1) * sizeof(Owner));
+
+    fclose(file);
+    printf("Element at index %d deleted successfully from binary file.\n", index);
+}
+
+// Функция добавления элемента в бинарный файл
+void add_to_binary_file(Owner owner) {
+    FILE* file = fopen("car_owners.bin", "ab");
+    if (file == NULL) {
+        printf("Error opening binary file.\n");
+        return;
+    }
+    fwrite(&owner, sizeof(Owner), 1, file);
+    fclose(file);
+    printf("Element added successfully to binary file.\n");
+}
+
+int main() {
+    int size = 0;
+    Owner* owners = create_dynamic_array(size);
+
+    // Добавление элементов в массив структур
+    Owner owner1 = {"Alisa", "123-456-7890", "Toyota Camry", "ABC123", "123456789"};
+    owners = add_to_array(owners, &size, owner1);
+
+    Owner owner2 = {"Dimit", "987-654-3210", "Honda Civic", "XYZ789", "987654321"};
+    owners = add_to_array(owners, &size, owner2);
+
+    Owner owner3 = {"Oxxxymiron", "555-555-5555", "Ford Mustang", "DEF456", "555555555"};
+    owners = add_to_array(owners, &size, owner3);
+
+    // Вывод содержимого массива структур
+    display_array(owners, size);
+
+    // Поиск и вывод структуры(структур) с заданным значением элемента
+    printf("Search results:\n");
+    search_and_print(owners, size, "Alisa");
+
+    // Сортировка массива структур по полю "Имя"
+    sort_array(owners, size, 1);
+    printf("Array sorted by Name:\n");
+    display_array(owners, size);
+
+    // Создание бинарного файла и вывод его содержимого
+    create_binary_file(owners, size);
+    printf("\nBinary file contents:\n");
+    display_binary_file();
+
+    // Удаление элемента из бинарного файла и изменение размера
+    int index_to_delete = 2;
+    delete_from_binary_file(index_to_delete);
+    printf("\nAfter deleting element at index %d:\n", index_to_delete);
+    display_binary_file();
+
+    // Добавление элемента в конец бинарного файла
+    Owner new_owner = {"Ilya", "111-222-3333", "Chevrolet Cruze", "GHI789", "111222333"};
+    add_to_binary_file(new_owner);
+    printf("\nAfter adding new element:\n");
+    display_binary_file();
+
+    free(owners);
+    return 0;
+}
