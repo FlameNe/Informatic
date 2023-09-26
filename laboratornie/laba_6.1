@@ -1,0 +1,49 @@
+// plant.h
+
+#ifndef PLANT_H
+#define PLANT_H
+
+#include <iostream>
+#include <string>
+
+class Plant {
+protected:
+    std::string name;
+    std::string type;
+
+public:
+    Plant(const std::string& name, const std::string& type);
+    virtual ~Plant();
+
+    virtual void show();
+    virtual void get();
+    virtual void set();
+};
+
+#endif // PLANT_H
+
+// plant.cpp
+
+#include "plant.h"
+
+Plant::Plant(const std::string& name, const std::string& type)
+    : name(name), type(type) {}
+
+Plant::~Plant() {}
+
+void Plant::show() {
+    std::cout << "Name: " << name << std::endl;
+    std::cout << "Type: " << type << std::endl;
+}
+
+void Plant::get() {
+    std::cout << "Enter name: ";
+    std::cin >> name;
+    std::cout << "Enter type: ";
+    std::cin >> type;
+}
+
+void Plant::set() {
+    std::cout << "Name: " << name << std::endl;
+    std::cout << "Type: " << type << std::endl;
+}
