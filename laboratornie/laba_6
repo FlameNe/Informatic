@@ -17,5 +17,186 @@ public:
     virtual void get();
     virtual void set();
 };
+///////////////////////////////
 
 #endif // PLANT_H
+
+#include "plant.h"
+
+Plant::Plant(const std::string& name, const std::string& type)
+    : name(name), type(type) {}
+
+Plant::~Plant() {}
+
+void Plant::show() {
+    std::cout << "Name: " << name << std::endl;
+    std::cout << "Type: " << type << std::endl;
+}
+
+void Plant::get() {
+    std::cout << "Enter name: ";
+    std::getline(std::cin, name);
+
+    std::cout << "Enter type: ";
+    std::getline(std::cin, type);
+}
+
+void Plant::set() {
+    std::cout << "Name: " << name << std::endl;
+    std::cout << "Type: " << type << std::endl;
+}
+/////////////////////////////////////
+
+// tree.h
+
+#ifndef TREE_H
+#define TREE_H
+
+#include "plant.h"
+
+class Tree : public Plant {
+private:
+    int age;
+
+public:
+    Tree(const std::string& name, const std::string& type, int age);
+
+    void show() override;
+    void get() override;
+};
+
+#endif // TREE_H
+
+///////////////////////////////////////////
+
+// tree.cpp
+
+#include "tree.h"
+
+Tree::Tree(const std::string& name, const std::string& type, int age)
+    : Plant(name, type), age(age) {}
+
+void Tree::show() {
+    Plant::show();
+    std::cout << "Age: " << age << std::endl;
+}
+
+void Tree::get() {
+    Plant::get();
+    std::cout << "Enter age: ";
+    std::cin >> age;
+    std::cin.ignore();
+}
+
+///////////////////////////////////////////////////////
+
+// flower.h
+
+#ifndef FLOWER_H
+#define FLOWER_H
+
+#include "plant.h"
+
+class Flower : public Plant {
+private:
+    double stemLength;
+
+public:
+    Flower(const std::string& name, const std::string& type, double stemLength);
+
+    void show() override;
+    void get() override;
+};
+
+#endif // FLOWER_H
+
+///////////////////////////////////////////////////
+
+// flower.cpp
+
+#include "flower.h"
+
+Flower::Flower(const std::string& name, const std::string& type, double stemLength)
+    : Plant(name, type), stemLength(stemLength) {}
+
+void Flower::show() {
+    Plant::show();
+    std::cout << "Stem Length: " << stemLength << std::endl;
+}
+
+void Flower::get() {
+    Plant::get();
+    std::cout << "Enter stem length: ";
+    std::cin >> stemLength;
+    std::cin.ignore();
+}
+
+/////////////////////////////////////////////////////
+
+// rose.h
+
+#ifndef ROSE_H
+#define ROSE_H
+
+#include "flower.h"
+
+class Rose : public Flower {
+private:
+    std::string color;
+
+public:
+    Rose(const std::string& name, const std::string& type, double stemLength, const std::string& color);
+
+    void show() override;
+};
+
+#endif // ROSE_H
+
+////////////////////////////////////////////////////////
+
+// rose.cpp
+
+#include "rose.h"
+
+Rose::Rose(const std::string& name, const std::string& type, double stemLength, const std::string& color)
+    : Flower(name, type, stemLength), color(color) {}
+
+void Rose::show() {
+    Flower::show();
+    std::cout << "Color: " << color << std::endl;
+}
+
+////////////////////////////////////////////////////////
+
+// main.cpp
+
+#include "plant.h"
+#include "tree.h"
+#include "flower.h"
+#include "rose.h"
+
+int main() {
+    const int NUM_PLANTS = 4;
+
+    Plant* plants[NUM_PLANTS];
+
+    Tree tree("Oak", "Deciduous", 50);
+    Flower flower("Lily", "Perennial", 30.5);
+    Rose rose("Red Rose", "Perennial", 25.5, "Red");
+
+    plants[0] = &tree;
+    plants[1] = &flower;
+    plants[2] = &rose;
+    plants[3] = new Tree("Pine", "Coniferous", 40);
+
+    for (int i = 0; i < NUM_PLANTS; i++) {
+        plants[i]->show();
+        std::cout << "-------------------" << std::endl;
+    }
+
+    for (int i = 0; i < NUM_PLANTS; i++) {
+        delete plants[i];
+    }
+
+    return 0;
+}
