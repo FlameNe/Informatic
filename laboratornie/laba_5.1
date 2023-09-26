@@ -1,0 +1,113 @@
+#include <iostream>
+
+class Rectangle {
+private:
+    double width;
+    double height;
+    double x;
+    double y;
+
+public:
+    Rectangle(double w, double h, double posX, double posY);
+    ~Rectangle();
+
+    void move(double dx, double dy);
+    void resize(double scaleFactor);
+    Rectangle getContainingRectangle(const Rectangle& otherRect) const;
+    double getArea() const;
+    double getWidth() const;
+    double getHeight() const;
+
+    void printInfo() const;
+
+    bool operator==(const Rectangle& otherRect) const;
+    bool operator<(const Rectangle& otherRect) const;
+
+    Rectangle operator+(double offset) const;
+};
+
+Rectangle::Rectangle(double w, double h, double posX, double posY)
+    : width(w), height(h), x(posX), y(posY) {
+    std::cout << "Creating a rectangle with width: " << width << ", height: " << height
+              << ", x: " << x << ", y: " << y << std::endl;
+}
+
+Rectangle::~Rectangle() {
+    std::cout << "Destroying the rectangle." << std::endl;
+}
+
+void Rectangle::move(double dx, double dy) {
+    x += dx;
+    y += dy;
+}
+
+void Rectangle::resize(double scaleFactor) {
+    width *= scaleFactor;
+    height *= scaleFactor;
+}
+
+Rectangle Rectangle::getContainingRectangle(const Rectangle& otherRect) const {
+    double minX = std::min(x, otherRect.x);
+    double maxX = std::max(x + width, otherRect.x + otherRect.width);
+    double minY = std::min(y, otherRect.y);
+    double maxY = std::max(y + height, otherRect.y + otherRect.height);
+
+    double newWidth = maxX - minX;
+    double newHeight = maxY - minY;
+
+    return Rectangle(newWidth, newHeight, minX, minY);
+}
+
+double Rectangle::getArea() const {
+    return width * height;
+}
+
+double Rectangle::getWidth() const {
+    return width;
+}
+
+double Rectangle::getHeight() const {
+    return height;
+}
+
+void Rectangle::printInfo() const {
+    std::cout << "Rectangle Information:" << std::endl;
+    std::cout << "Width: " << width << std::endl;
+    std::cout << "Height: " << height << std::endl;
+    std::cout << "X: " << x << std::endl;
+    std::cout << "Y: " << y << std::endl;
+}
+
+bool Rectangle::operator==(const Rectangle& otherRect) const {
+    return width == otherRect.width && height == otherRect.height && x == otherRect.x && y == otherRect.y;
+}
+
+bool Rectangle::operator<(const Rectangle& otherRect) const {
+    return getArea() < otherRect.getArea();
+}
+
+Rectangle Rectangle::operator+(double offset) const {
+    return Rectangle(width, height, x + offset, y + offset);
+}
+
+int main() {
+    Rectangle rect1(5.0, 3.0, 0.0, 0.0);
+    Rectangle rect2(4.0, 2.0, 3.0, 2.0);
+
+    std::cout << "Comparing rectangles:" << std::endl;
+    if (rect1 == rect2) {
+        std::cout << "Rectangles are equal." << std::endl;
+    } else {
+        std::cout << "Rectangles are not equal." << std::endl;
+    }
+
+    std::cout << "Area of rect1: " << rect1.getArea() << std::endl;
+    std::cout << "Area of rect2: " << rect2.getArea() << std::endl;
+    std::cout << "Rect1 is less than rect2 by area: " << (rect1 < rect2) << std::endl;
+
+    Rectangle rect3 = rect1 + 2.0;
+    std::cout << "Rectangle rect3 after adding 2.0 to its position:" << std::endl;
+    rect3.printInfo();
+
+    return 0;
+}
