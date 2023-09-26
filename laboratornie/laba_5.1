@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 class Rectangle {
 private:
@@ -8,44 +9,49 @@ private:
     double y;
 
 public:
-    Rectangle(double w, double h, double posX, double posY);
-    ~Rectangle();
+    Rectangle(double w, double h, double posX, double posY);  // Конструктор класса
+    ~Rectangle();  // Деструктор класса
 
-    void move(double dx, double dy);
-    void resize(double scaleFactor);
-    Rectangle getContainingRectangle(const Rectangle& otherRect) const;
-    double getArea() const;
-    double getWidth() const;
-    double getHeight() const;
+    void move(double dx, double dy);  // Метод для перемещения прямоугольника на плоскости
+    void resize(double scaleFactor);  // Метод для изменения размеров прямоугольника
+    Rectangle getContainingRectangle(const Rectangle& otherRect) const;  // Метод для построения наименьшего прямоугольника, содержащего два заданных прямоугольника
+    double getArea() const;  // Метод для определения площади прямоугольника
+    double getWidth() const;  // Метод для получения ширины прямоугольника
+    double getHeight() const;  // Метод для получения высоты прямоугольника
 
-    void printInfo() const;
+    void printInfo() const;  // Метод для вывода информации о прямоугольнике
 
-    bool operator==(const Rectangle& otherRect) const;
-    bool operator<(const Rectangle& otherRect) const;
+    bool operator==(const Rectangle& otherRect) const;  // Оператор сравнения прямоугольников на равенство
+    bool operator<(const Rectangle& otherRect) const;  // Оператор сравнения прямоугольников по площади
 
-    Rectangle operator+(double offset) const;
+    Rectangle operator+(double offset) const;  // Оператор сложения прямоугольника с вещественным числом для движения
 };
 
+// Реализация конструктора класса
 Rectangle::Rectangle(double w, double h, double posX, double posY)
     : width(w), height(h), x(posX), y(posY) {
     std::cout << "Creating a rectangle with width: " << width << ", height: " << height
               << ", x: " << x << ", y: " << y << std::endl;
 }
 
+// Реализация деструктора класса
 Rectangle::~Rectangle() {
     std::cout << "Destroying the rectangle." << std::endl;
 }
 
+// Метод для перемещения прямоугольника на плоскости
 void Rectangle::move(double dx, double dy) {
     x += dx;
     y += dy;
 }
 
+// Метод для изменения размеров прямоугольника
 void Rectangle::resize(double scaleFactor) {
     width *= scaleFactor;
     height *= scaleFactor;
 }
 
+// Метод для построения наименьшего прямоугольника, содержащего два заданных прямоугольника
 Rectangle Rectangle::getContainingRectangle(const Rectangle& otherRect) const {
     double minX = std::min(x, otherRect.x);
     double maxX = std::max(x + width, otherRect.x + otherRect.width);
@@ -58,56 +64,85 @@ Rectangle Rectangle::getContainingRectangle(const Rectangle& otherRect) const {
     return Rectangle(newWidth, newHeight, minX, minY);
 }
 
+// Метод для определения площади прямоугольника
 double Rectangle::getArea() const {
     return width * height;
 }
 
+// Метод для получения ширины прямоугольника
 double Rectangle::getWidth() const {
     return width;
 }
 
+// Метод для получения высоты прямоугольника
 double Rectangle::getHeight() const {
     return height;
 }
 
+// Метод для вывода информации о прямоугольнике
 void Rectangle::printInfo() const {
-    std::cout << "Rectangle Information:" << std::endl;
-    std::cout << "Width: " << width << std::endl;
-    std::cout << "Height: " << height << std::endl;
-    std::cout << "X: " << x << std::endl;
-    std::cout << "Y: " << y << std::endl;
+    std::cout << "Rectangle info: Width: " << width << ", Height: " << height
+              << ", X: " << x << ", Y: " << y << std::endl;
 }
 
+// Оператор сравнения прямоугольников на равенство
 bool Rectangle::operator==(const Rectangle& otherRect) const {
-    return width == otherRect.width && height == otherRect.height && x == otherRect.x && y == otherRect.y;
+    return (width == otherRect.width) && (height == otherRect.height);
 }
 
+// Оператор сравнения прямоугольников по площади
 bool Rectangle::operator<(const Rectangle& otherRect) const {
     return getArea() < otherRect.getArea();
 }
 
+// Оператор сложения прямоугольника с вещественным числом для движения
 Rectangle Rectangle::operator+(double offset) const {
-    return Rectangle(width, height, x + offset, y + offset);
+    Rectangle movedRect = *this;
+    movedRect.x += offset;
+    movedRect.y += offset;
+    return movedRect;
 }
 
 int main() {
-    Rectangle rect1(5.0, 3.0, 0.0, 0.0);
-    Rectangle rect2(4.0, 2.0, 3.0, 2.0);
+    // Создание и использование объектов класса Rectangle
+    Rectangle rect1(5, 3, 0, 0);
+    rect1.printInfo();  // Вывод информации о прямоугольнике
 
-    std::cout << "Comparing rectangles:" << std::endl;
+    rect1.move(2, 3);  // Перемещение прямоугольника
+    rect1.printInfo();  // Вывод информации о прямоугольнике
+
+    rect1.resize(2);  // Изменение размеров прямоугольника
+    rect1.printInfo();  // Вывод информации о прямоугольнике
+
+    Rectangle rect2(4, 6, 1, 2);
+
+    Rectangle containingRect = rect1.getContainingRectangle(rect2);  // Построение наименьшего прямоугольника, содержащего два заданных прямоугольника
+    containingRect.printInfo();  // Вывод информации о прямоугольнике
+
+    double area = rect1.getArea();  // Определение площади прямоугольника
+    std::cout << "Area of rect1: " << area << std::endl;
+
+    double width = rect1.getWidth();  // Получение ширины прямоугольника
+    std::cout << "Width of rect1: " << width << std::endl;
+
+    double height = rect1.getHeight();  // Получение высоты прямоугольника
+    std::cout << "Height of rect1: " << height << std::endl;
+
+    // Проверка операторов
     if (rect1 == rect2) {
         std::cout << "Rectangles are equal." << std::endl;
     } else {
         std::cout << "Rectangles are not equal." << std::endl;
     }
 
-    std::cout << "Area of rect1: " << rect1.getArea() << std::endl;
-    std::cout << "Area of rect2: " << rect2.getArea() << std::endl;
-    std::cout << "Rect1 is less than rect2 by area: " << (rect1 < rect2) << std::endl;
+    if (rect1 < rect2) {
+        std::cout << "Rect1 is smaller than rect2." << std::endl;
+    } else {
+        std::cout << "Rect1 is not smaller than rect2." << std::endl;
+    }
 
-    Rectangle rect3 = rect1 + 2.0;
-    std::cout << "Rectangle rect3 after adding 2.0 to its position:" << std::endl;
-    rect3.printInfo();
+    Rectangle movedRect = rect1 + 2;  // Движение прямоугольника
+    movedRect.printInfo();  // Вывод информации о прямоугольнике
 
     return 0;
 }
