@@ -1,0 +1,21 @@
+#ifndef PLANT_H
+#define PLANT_H
+
+#include <iostream>
+#include <string>
+
+class Plant {
+protected:
+    std::string name;
+    std::string type;
+
+public:
+    Plant(const std::string& name, const std::string& type);
+    virtual ~Plant();
+
+    virtual void show();
+    virtual void get();
+    virtual void set();
+};
+
+#endif // PLANT_H
